@@ -10,14 +10,14 @@ Use GitHub Copilot Chat to consolidate messy, multi-source coding standards into
 
 | | Option A — Real Sources (MCP) | Option B — Mock Files |
 |---|---|---|
-| Confluence | Fetch live via Atlassian MCP | Use `sources/confluence_export.md` |
-| Public guidelines | Fetch via terminal or Copilot web fetch | Use `sources/public_guidelines.md` |
-| Team notes | Fetch via Atlassian MCP or GitHub MCP | Use `sources/team_notes.md` |
+| Confluence | Fetch live via Atlassian MCP | Use `sample sources/confluence_export.md` |
+| Public guidelines | Fetch via terminal or Copilot web fetch | Use `sample sources/public_guidelines.md` |
+| Team notes | Fetch via Atlassian MCP or GitHub MCP | Use `sample sources/team_notes.md` |
 | Step 6 validation | PR branch files via GitHub MCP | PR branch files via local `git checkout` |
 | Setup effort | High — MCP config required | Zero — files provided |
 
 Use **Option A** when participants have Atlassian accounts and you want maximum real-world authenticity.
-Use **Option B** for time-constrained sessions or when Confluence access is unavailable.
+Use **Option B** for time-constrained sessions or when Confluence access is unavailable. *(If Option A sources couldn't be fetched, use the files in `sample sources/` as fallback)*
 
 ---
 
@@ -25,7 +25,7 @@ Use **Option B** for time-constrained sessions or when Confluence access is unav
 
 ```
 standards-aggregator-lab/
-  sources/
+  sample sources/
     confluence_export.md     ← old Confluence wiki export  (Option B)
     public_guidelines.md     ← public style guide excerpt  (Option B)
     team_notes.md            ← informal Slack / retro notes (Option B)
@@ -64,7 +64,7 @@ Add to VS Code `settings.json` (`Ctrl+Shift+P` → _Open User Settings JSON_):
 
 ```json
 {
-  "mcp.servers": {
+  "servers": {
     "atlassian": {
       "type": "http",
       "url": "https://mcp.atlassian.com/v1/mcp",
@@ -78,11 +78,10 @@ Add to VS Code `settings.json` (`Ctrl+Shift+P` → _Open User Settings JSON_):
 
 Generate an API token at: https://id.atlassian.com/manage-profile/security/api-tokens
 
-### GitHub MCP — for team notes in a GitHub Wiki
+### Update GitHub MCP within servers— for team notes in a GitHub Wiki
 
 ```json
-{
-  "mcp.servers": {
+
     "github": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
@@ -90,8 +89,9 @@ Generate an API token at: https://id.atlassian.com/manage-profile/security/api-t
         "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
       }
     }
-  }
-}
+
+Generate an API token from github dev settings → Developer settings → Personal access tokens → Generate new token (classic) → select scopes (repo, read:org, read:user) → Generate token.
+  
 ```
 
 After adding either server, restart VS Code and verify the MCP server appears in the Copilot Chat **Tools** panel.
@@ -130,17 +130,14 @@ Save Copilot's output to `output/standards.schema.md`.
 
 **Fetch Confluence coding standards pages:**
 
-```
-Search Confluence for pages in the "<your-space-key>" space that contain coding standards,
-development guidelines, or quality rules. List the page titles and IDs.
-```
+
 
 ```
-Fetch the full content of Confluence page "<page-title>" from space "<space-key>".
+Fetch the full content of Confluence page link "<page-link>".
 Save the content as sources/confluence_export.md.
 ```
 
-**Fetch public guidelines via terminal (PowerShell):**
+**Fetch public guidelines via terminal - make sure be path of source (PowerShell):**
 
 ```powershell
 # Fetch Google Java Style Guide and extract text
@@ -162,16 +159,10 @@ Fetch the content of the Confluence page "<Team Notes / Engineering Standards>"
 in space "<space-key>". Save as sources/team_notes.md.
 ```
 
-**Or from a GitHub Wiki:**
 
-```
-Using the GitHub MCP, fetch the wiki page "Coding-Standards" from repository
-"<org>/<repo>". Save the content as sources/team_notes.md.
-```
+#### Option B — Use Mock Seed Files (no setup required use only if Option A isn't feasible)
 
-#### Option B — Use Mock Seed Files (no setup required)
-
-All three source files are already in `sources/`. Proceed directly to Step 3.
+All three source files are already in `sample sources/`. Rename it as `sources/` and proceed directly to Step 3.
 
 ---
 
@@ -199,13 +190,13 @@ Save Copilot's output to `output/coding-standards.md`.
 **Create:** `.github/copilot-instructions.md`
 
 ```
-Convert #file:output/coding-standards.md into a concise instruction file for GitHub Copilot.
+Convert #file:output/coding-standards.md into a concise instruction file for GitHub Copilot in .github/copilot-instructions.md.
 Make it directive, short, and optimized for AI coding help.
 Use MUST/SHOULD language. Include repo-specific conventions.
 Keep it under 50 lines.
 ```
 
-Save to `.github/copilot-instructions.md`.
+Check the output is saved to `.github/copilot-instructions.md`.
 
 ---
 

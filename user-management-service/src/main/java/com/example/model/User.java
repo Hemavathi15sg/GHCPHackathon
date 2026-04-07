@@ -4,7 +4,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
+import java.time.LocalDateTime;
+
+/**
+ * User entity with audit fields.
+ */
 @Entity
 @Table(name = "app_users")
 public class User {
@@ -18,6 +25,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt;
+
     public User() {}
 
     public String getId() { return id; }
@@ -28,4 +39,7 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
