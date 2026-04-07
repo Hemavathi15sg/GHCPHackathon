@@ -213,6 +213,7 @@ Save to `.github/pull_request_template.md`.
 
 ---
 
+<!-- 
 ### Step 6 — Validate Against the Real PR Branch ⭐ WOW MOMENT
 
 Validation always uses the `user-management-service` PR branch — **no synthetic file needed**.
@@ -254,6 +255,20 @@ List every violation as: Rule Violated | File | Method | Why it matters | Correc
 ```
 
 Watch Copilot catch real violations in real production-destined code — against standards **you** wrote. That's the full loop.
+-->
+
+### Step 6 — Validate With a Bad Example ⭐ WOW MOMENT
+
+**Use:** `sample/bad_example.java`
+
+```
+Review #file:sample/bad_example.java against the rules in
+#file:.github/copilot-instructions.md and #file:output/coding-standards.md.
+List each violation as:
+| Rule Violated | Line | Why it matters | Corrected code |
+```
+
+Watch Copilot catch every violation against the standards **you** wrote. That's the full loop.
 
 ---
 
