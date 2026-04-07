@@ -6,21 +6,36 @@ Use GitHub Copilot Chat to consolidate messy, multi-source coding standards into
 
 ---
 
+## Delivery Options
+
+| | Option A — Real Sources (MCP) | Option B — Mock Files |
+|---|---|---|
+| Confluence | Fetch live via Atlassian MCP | Use `sources/confluence_export.md` |
+| Public guidelines | Fetch via terminal or Copilot web fetch | Use `sources/public_guidelines.md` |
+| Team notes | Fetch via Atlassian MCP or GitHub MCP | Use `sources/team_notes.md` |
+| Step 6 validation | PR branch files via GitHub MCP | PR branch files via local `git checkout` |
+| Setup effort | High — MCP config required | Zero — files provided |
+
+Use **Option A** when participants have Atlassian accounts and you want maximum real-world authenticity.
+Use **Option B** for time-constrained sessions or when Confluence access is unavailable.
+
+---
+
 ## Repo Structure
 
 ```
 standards-aggregator-lab/
   sources/
-    confluence_export.md     ← old Confluence wiki export
-    public_guidelines.md     ← public style guide excerpt
-    team_notes.md            ← informal Slack / retro notes
+    confluence_export.md     ← old Confluence wiki export  (Option B)
+    public_guidelines.md     ← public style guide excerpt  (Option B)
+    team_notes.md            ← informal Slack / retro notes (Option B)
   output/
     (empty — you'll fill this)
   .github/
     (empty — you'll fill this)
-  sample/
-    bad_example.java         ← used in Step 5
   README.md
+
+Validation (Step 6) uses files from the shared `user-management-service/` repo (PR branch).
 ```
 
 ---
@@ -36,6 +51,50 @@ Three ways to reference a file in Copilot Chat:
 | Copy-paste | Copy file content → paste before your prompt |
 
 > **Tip:** If Copilot says it can't see a file, paste the content directly — it always works.
+
+---
+
+## MCP Setup (Option A only)
+
+Skip this section if you are using Option B (mock files).
+
+### Atlassian MCP — for Confluence pages and Jira
+
+Add to VS Code `settings.json` (`Ctrl+Shift+P` → _Open User Settings JSON_):
+
+```json
+{
+  "mcp.servers": {
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/mcp",
+      "headers": {
+        "Authorization": "Bearer <YOUR_ATLASSIAN_API_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+Generate an API token at: https://id.atlassian.com/manage-profile/security/api-tokens
+
+### GitHub MCP — for team notes in a GitHub Wiki
+
+```json
+{
+  "mcp.servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+After adding either server, restart VS Code and verify the MCP server appears in the Copilot Chat **Tools** panel.
 
 ---
 
@@ -65,7 +124,58 @@ Save Copilot's output to `output/standards.schema.md`.
 
 ---
 
-### Step 2 — Aggregate Sources into a Single Standards Doc
+### Step 2 — Fetch / Gather Source Files
+
+#### Option A — Fetch from Confluence and GitHub (MCP required)
+
+**Fetch Confluence coding standards pages:**
+
+```
+Search Confluence for pages in the "<your-space-key>" space that contain coding standards,
+development guidelines, or quality rules. List the page titles and IDs.
+```
+
+```
+Fetch the full content of Confluence page "<page-title>" from space "<space-key>".
+Save the content as sources/confluence_export.md.
+```
+
+**Fetch public guidelines via terminal (PowerShell):**
+
+```powershell
+# Fetch Google Java Style Guide and extract text
+Invoke-WebRequest -Uri "https://google.github.io/styleguide/javaguide.html" -OutFile sources/public_guidelines_raw.html
+```
+
+Then ask Copilot to clean it:
+
+```
+Read the raw HTML in #file:sources/public_guidelines_raw.html.
+Extract and structure the naming, error handling, and security rules into clean markdown.
+Save as sources/public_guidelines.md.
+```
+
+**Fetch team notes from Confluence:**
+
+```
+Fetch the content of the Confluence page "<Team Notes / Engineering Standards>"
+in space "<space-key>". Save as sources/team_notes.md.
+```
+
+**Or from a GitHub Wiki:**
+
+```
+Using the GitHub MCP, fetch the wiki page "Coding-Standards" from repository
+"<org>/<repo>". Save the content as sources/team_notes.md.
+```
+
+#### Option B — Use Mock Seed Files (no setup required)
+
+All three source files are already in `sources/`. Proceed directly to Step 3.
+
+---
+
+### Step 3 — Aggregate Sources into a Single Standards Doc
 
 **Create:** `output/coding-standards.md`
 
@@ -84,7 +194,7 @@ Save Copilot's output to `output/coding-standards.md`.
 
 ---
 
-### Step 3 — Generate a Copilot Instructions File
+### Step 4 — Generate a Copilot Instructions File
 
 **Create:** `.github/copilot-instructions.md`
 
@@ -99,7 +209,7 @@ Save to `.github/copilot-instructions.md`.
 
 ---
 
-### Step 4 — Generate a PR Checklist Template
+### Step 5 — Generate a PR Checklist Template
 
 **Create:** `.github/pull_request_template.md`
 
@@ -112,18 +222,47 @@ Save to `.github/pull_request_template.md`.
 
 ---
 
-### Step 5 — Validate With a Bad Example ⭐ WOW MOMENT
+### Step 6 — Validate Against the Real PR Branch ⭐ WOW MOMENT
 
-**Use:** `sample/bad_example.java`
+Validation always uses the `user-management-service` PR branch — **no synthetic file needed**.
+
+#### Option A — Fetch files via GitHub MCP (no local clone needed)
 
 ```
-Review #file:sample/bad_example.java against the rules in
+Get the contents of src/main/java/com/example/service/UserService.java from the
+feature/USER-142-user-registration branch of <org>/user-management-service.
+```
+
+```
+Get the contents of src/main/java/com/example/controller/UserController.java from the
+feature/USER-142-user-registration branch of <org>/user-management-service.
+```
+
+Then:
+
+```
+Review the two files above against the rules in
 #file:.github/copilot-instructions.md and #file:output/coding-standards.md.
-List each violation as:
-| Rule Violated | Line | Why it matters | Corrected code |
+List every violation as: Rule Violated | File | Method | Why it matters | Corrected code.
 ```
 
-Watch Copilot catch every violation against the standards **you** wrote. That's the full loop.
+#### Option B — Local checkout
+
+```powershell
+cd ../user-management-service
+git checkout feature/USER-142-user-registration
+```
+
+Then in Copilot Chat:
+
+```
+Review #file:src/main/java/com/example/service/UserService.java and
+#file:src/main/java/com/example/controller/UserController.java against the rules in
+#file:.github/copilot-instructions.md and #file:output/coding-standards.md.
+List every violation as: Rule Violated | File | Method | Why it matters | Corrected code.
+```
+
+Watch Copilot catch real violations in real production-destined code — against standards **you** wrote. That's the full loop.
 
 ---
 
