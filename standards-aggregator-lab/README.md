@@ -143,3 +143,63 @@ Watch Copilot catch every violation against the standards **you** wrote. That's 
 | Clarity — rules are measurable + examples exist | 30% |
 | Completeness — covers security / testing / logging / performance | 30% |
 | Copilot usability — instructions are concise + enforceable | 40% |
+<!--
+
+### Step 6 — Validate Against the Real PR Branch ⭐ WOW MOMENT (COMMENTED OUT)
+
+Validation always uses the `user-management-service` PR branch — **no synthetic file needed**.
+
+#### Option A — Fetch files via GitHub MCP (no local clone needed)
+
+```
+Get the contents of src/main/java/com/example/service/UserService.java from the
+feature/USER-142-user-registration branch of <org>/user-management-service.
+```
+
+```
+Get the contents of src/main/java/com/example/controller/UserController.java from the
+feature/USER-142-user-registration branch of <org>/user-management-service.
+```
+
+Then:
+
+```
+Review the two files above against the rules in
+#file:.github/copilot-instructions.md and #file:output/coding-standards.md.
+List every violation as: Rule Violated | File | Method | Why it matters | Corrected code.
+```
+
+#### Option B — Local checkout
+
+```powershell
+cd ../user-management-service
+git checkout feature/USER-142-user-registration
+```
+
+Then in Copilot Chat:
+
+```
+Review #file:src/main/java/com/example/service/UserService.java and
+#file:src/main/java/com/example/controller/UserController.java against the rules in
+#file:.github/copilot-instructions.md and #file:output/coding-standards.md.
+List every violation as: Rule Violated | File | Method | Why it matters | Corrected code.
+```
+
+Watch Copilot catch real violations in real production-destined code — against standards **you** wrote. That's the full loop.
+
+-->
+
+### Step 6 — Validate With a Bad Example ⭐ WOW MOMENT
+
+Use: `sample/bad_example.java`
+
+Paste this into Copilot Chat:
+
+```
+Review #file:sample/bad_example.java against the rules in
+#file:.github/copilot-instructions.md and #file:output/coding-standards.md.
+List each violation as:
+| Rule Violated | Line | Why it matters | Corrected code |
+```
+
+Watch Copilot catch every violation in synthesized ba
